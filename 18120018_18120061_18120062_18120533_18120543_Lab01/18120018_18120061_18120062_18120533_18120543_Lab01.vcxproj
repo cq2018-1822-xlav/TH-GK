@@ -19,11 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Color.h" />
     <ClInclude Include="src\ColorTransformer.h" />
     <ClInclude Include="src\Converter.h" />
     <ClInclude Include="src\CV_Include.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Color.cpp" />
     <ClCompile Include="src\ColorTransformer.cpp" />
     <ClCompile Include="src\Converter.cpp" />
     <ClCompile Include="src\Main.cpp" />
