@@ -216,9 +216,9 @@ int Converter::RGB2HSV(const cv::Mat& sourceImage, cv::Mat& destinationImage)
 		uchar* ptrDestinationRow = ptrDestinationData;
 
 		for (int x = 0; x < width; x++, ptrSourceRow += sourceChannels, ptrDestinationRow += destinationChannels) {
-			uchar blueValue = ptrSourceRow[0];
-			uchar greenValue = ptrSourceRow[1];
-			uchar redValue = ptrSourceRow[2];
+			float blueValue = 1.0 * ptrSourceRow[0] / 255;
+			float greenValue = 1.0 * ptrSourceRow[1] / 255;
+			float redValue = 1.0 * ptrSourceRow[2] / 255;
 
 			float hue, saturation, value;
 
@@ -346,9 +346,9 @@ int Converter::HSV2RGB(const cv::Mat& sourceImage, cv::Mat& destinationImage)
 
 			float chroma = value_value * saturation_value;
 
-			float hprime = cv::saturate_cast<float>(fmod(hue_value / 60.0, 6));
+			float hprime = cv::saturate_cast<float>(1.0 * hue_value / 60);
 
-			float n = cv::saturate_cast<float>(chroma * (1 - fabs(fmod(hprime, 2) - 1)));
+			float X = cv::saturate_cast<float>(chroma * (1 - fabs(fmod(hprime, 2) - 1)));
 
 			float m = value_value - chroma;
 
@@ -356,28 +356,38 @@ int Converter::HSV2RGB(const cv::Mat& sourceImage, cv::Mat& destinationImage)
 			float greenValue = 0.0f;
 			float blueValue = 0.0f;
 
+			// HSV Transform normal
 			0 <= hprime && hprime < 1 ?
-				redValue = chroma, greenValue = n, blueValue = 0 :
+				redValue = chroma, greenValue = X, blueValue = 0 :
 				1 <= hprime && hprime < 2 ?
-				redValue = n, greenValue = chroma, blueValue = 0 :
+				redValue = X, greenValue = chroma, blueValue = 0 :
 				2 <= hprime && hprime < 3 ?
-				redValue = 0, greenValue = chroma, blueValue = n :
+				redValue = 0, greenValue = chroma, blueValue = X :
 				3 <= hprime && hprime < 4 ?
-				redValue = 0, greenValue = n, blueValue = chroma :
+				redValue = 0, greenValue = X, blueValue = chroma :
 				4 <= hprime && hprime < 5 ?
-				redValue = n, greenValue = 0, blueValue = chroma :
+				redValue = X, greenValue = 0, blueValue = chroma :
 				5 <= hprime && hprime < 6 ?
-				redValue = chroma, greenValue = 0, blueValue = n :
+				redValue = chroma, greenValue = 0, blueValue = X :
 				redValue = 0, greenValue = 0, blueValue = 0;
 
 			redValue += m;
-			greenValue += m;
 			blueValue += m;
+			greenValue += m;
+
+			// HSV Transform Alter
+			float k_red = cv::saturate_cast<float>(fmod((5 + 1.0 * hue_value / 60), 6));
+			float k_green = cv::saturate_cast<float>(fmod((3 + 1.0 * hue_value / 60), 6));
+			float k_blue = cv::saturate_cast<float>(fmod((1 + 1.0 * hue_value / 60), 6));
+
+			float f_red = cv::saturate_cast<float>(value_value - cv::saturate_cast<float>(value_value * saturation_value) * fmax(0, fmin(fmin(k_red, 4 - k_red), 1)));
+			float f_green = cv::saturate_cast<float>(value_value - cv::saturate_cast<float>(value_value * saturation_value) * fmax(0, fmin(fmin(k_green, 4 - k_green), 1)));
+			float f_blue = cv::saturate_cast<float>(value_value - cv::saturate_cast<float>(value_value * saturation_value) * fmax(0, fmin(fmin(k_blue, 4 - k_blue), 1)));
 
 			// Gán giá trị 3 kênh màu của ảnh đích 
-			ptrDestinationRow[0] = cv::saturate_cast<uchar>(blueValue * 255.0f);
-			ptrDestinationRow[1] = cv::saturate_cast<uchar>(greenValue * 255.0f);
-			ptrDestinationRow[2] = cv::saturate_cast<uchar>(redValue * 255.0f);
+			ptrDestinationRow[0] = cv::saturate_cast<uchar>(f_blue * 255.0f);
+			ptrDestinationRow[1] = cv::saturate_cast<uchar>(f_green * 255.0f);
+			ptrDestinationRow[2] = cv::saturate_cast<uchar>(f_red * 255.0f);
 		}
 	}
 
