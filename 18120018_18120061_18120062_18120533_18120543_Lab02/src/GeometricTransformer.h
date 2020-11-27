@@ -27,6 +27,10 @@ public:
 
 /*
 Lớp nội suy màu theo phương pháp song tuyến tính
+
+Công thức:
+	x' = a_{0} + a_{1}x + a_{2}y + a_{3}xy
+	y' = b_{0} + b_{1}x + b_{2}y + b_{3}xy
 */
 class BilinearInterpolate : public PixelInterpolate
 {
@@ -38,6 +42,9 @@ public:
 
 /*
 Lớp nội suy màu theo phương pháp láng giềng gần nhất
+
+Công thức:
+	f'(x', y') = f(round(x),round(y))
 */
 class NearestNeighborInterpolate : public PixelInterpolate
 {
@@ -49,16 +56,17 @@ public:
 
 /*
 Lớp biểu diễn pháp biến đổi affine
+
 */
 class AffineTransform
 {
 	cv::Mat _matrixTransform; //ma trận 3x3 biểu diễn phép biến đổi affine
+
 public:
 	void Translate(float dx, float dy);// xây dựng matrix transform cho phép tịnh tiến theo vector (dx,dy)
 	void Rotate(float angle);//xây dựng matrix transform cho phép xoay 1 góc angle
 	void Scale(float sx, float sy);//xây dựng matrix transform cho phép tỉ lệ theo hệ số 		
 	void TransformPoint(float& x, float& y);//transform 1 điểm (x,y) theo matrix transform đã có
-
 	AffineTransform();
 	~AffineTransform();
 };

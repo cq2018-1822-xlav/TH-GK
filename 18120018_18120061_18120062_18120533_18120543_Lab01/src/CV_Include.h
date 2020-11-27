@@ -20,6 +20,9 @@
 // Converter
 #include "Converter.h"
 
+// Color
+#include "Color.h"
+
 // Developer define constant
 // 0.2989 R + 0.5870 G + 0.1141 B
 #define ALPHA_1 0.2989
@@ -35,6 +38,5 @@
 #define _ALPHA_1_ 0.2126
 #define _ALPHA_2_ 0.7152
 #define _ALPHA_3_ 0.0722
-
 
 #endif // CV_INCLUDE_H

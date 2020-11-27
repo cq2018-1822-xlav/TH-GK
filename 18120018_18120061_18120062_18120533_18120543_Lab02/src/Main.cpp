@@ -1,30 +1,110 @@
 #include <iostream>
 #include <functional>
 #include <string>
-#include "CV_Include.h"
+#include "GeometricTransformer.h"
 
-int main() {
-	[out = std::ref(std::cout << "Hello ")] (){out.get() << "world."; }();
-
-	// Read the image file
-	cv::Mat image = cv::imread("E:/illya.jpg");
-
-	// Check for failure
-	if (image.empty())
+static int __str_cmp__(const char* string_1, const char* string_2)
+{
+	while (*string_1)
 	{
-		std::cout << "Could not open or find the image" << std::endl;
-		std::cin.get(); //wait for any key press
-		return -1;
+		// if characters differ or end of second string is reached
+		if (*string_1 != *string_2)
+			break;
+
+		// move to next pair of characters
+		string_1++;
+		string_2++;
 	}
 
-	std::string windowName = "My girl"; //Name of the window
+	// return the ASCII difference after converting char* to unsigned char*
+	return *(const unsigned char*)string_1 - *(const unsigned char*)string_2 == 0 ? 1 : 0;
+}
 
-	cv::namedWindow(windowName); // Create a window
 
-	imshow(windowName, image); // Show our image inside the created window.
+int main(int argc, char* argv[]) {
+	// std::cout << "Hello world" << "\n";
+	GeometricTransformer geometrixTransformer;
 
-	cv::waitKey(0); // Wait for any keystroke in the window
+	cv::Mat translateMatrix = (cv::Mat_<float>(3, 3) << 1, 7, 2, 9, 1, 3, 0, 0, 1);
 
-	cv::destroyWindow(windowName); //destroy the created window
+	std::cout << translateMatrix.ptr<float>(1)[0] << std::endl;
+
+	/*
+	cv::Mat matrix = cv::Mat::eye(3, 3, CV_32FC1);
+	std::cout << translateMatrix << std::endl;
+
+	for (int i = 0; i < translateMatrix.rows; i++) {
+		for (int j = 0; j < translateMatrix.cols; j++) {
+			std::cout << translateMatrix.at<float>(i, j) << " ";
+		}
+		std::cout << "\n";
+	}
+
+	matrix = matrix * translateMatrix;
+
+	for (int i = 0; i < matrix.rows; i++) {
+		for (int j = 0; j < matrix.cols; j++) {
+			std::cout << matrix.at<float>(i, j) << " ";
+		}
+		std::cout << "\n";
+	} */
+	if (__str_cmp__(argv[1], "--zoom")) {
+		if (__str_cmp__(argv[2], "--bl")) {
+
+		}
+		else if (__str_cmp__(argv[2], "--nn")) {
+
+		}
+		else {
+
+		}
+	}
+	else if (__str_cmp__(argv[1], "--resize")) {
+		if (__str_cmp__(argv[2], "--bl")) {
+
+		}
+		else if (__str_cmp__(argv[2], "--nn")) {
+
+		}
+		else {
+
+		}
+	}
+	else if (__str_cmp__(argv[1], "--rotate")) {
+		if (__str_cmp__(argv[2], "--bl")) {
+
+		}
+		else if (__str_cmp__(argv[2], "--nn")) {
+
+		}
+		else {
+
+		}
+	}
+	else if (__str_cmp__(argv[1], "--rotateN")) {
+		if (__str_cmp__(argv[2], "--bl")) {
+
+		}
+		else if (__str_cmp__(argv[2], "--nn")) {
+
+		}
+		else {
+
+		}
+	}
+	else if (__str_cmp__(argv[1], "--flip")) {
+		if (__str_cmp__(argv[2], "--bl")) {
+
+		}
+		else if (__str_cmp__(argv[2], "--nn")) {
+
+		}
+		else {
+
+		}
+	}
+	else {
+
+	}
 	return 0;
 }
