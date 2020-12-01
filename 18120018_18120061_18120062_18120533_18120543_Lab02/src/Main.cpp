@@ -71,7 +71,7 @@ int main(int argc, char* argv[]) {
 	}
 	else if (strcmp(argv[1], "--resize") == 0) {
 		// program.exe --resize --bl image_path newWidth newHeight
-		if (strcmp(argv[2], "--bl")) {
+		if (strcmp(argv[2], "--bl") == 0) {
 			interpolate = new BilinearInterpolate();
 			// Đọc ảnh (image) đầu vào)
 			if (argv[3] == nullptr) {
@@ -134,7 +134,7 @@ int main(int argc, char* argv[]) {
 	}
 	else if (strcmp(argv[1], "--rotate") == 0) {
 		// program.exe --rotate --bl image_path angle
-		if (strcmp(argv[2], "--bl")) {
+		if (strcmp(argv[2], "--bl") == 0) {
 			interpolate = new BilinearInterpolate();
 
 			// Đọc ảnh (image) đầu vào)
@@ -197,7 +197,7 @@ int main(int argc, char* argv[]) {
 	}
 	else if (strcmp(argv[1], "--rotateN") == 0) {
 		// program.exe --rotateN --bl image_path angle
-		if (strcmp(argv[2], "--bl")) {
+		if (strcmp(argv[2], "--bl") == 0) {
 			interpolate = new BilinearInterpolate();
 			// Đọc ảnh (image) đầu vào)
 			if (argv[3] == nullptr) {
@@ -226,7 +226,7 @@ int main(int argc, char* argv[]) {
 
 		}
 		// program.exe --rotateN --nn image_path angle
-		else if (strcmp(argv[2], "--nn")) {
+		else if (strcmp(argv[2], "--nn") == 0) {
 			interpolate = new NearestNeighborInterpolate();
 			// Đọc ảnh (image) đầu vào)
 			if (argv[3] == nullptr) {
@@ -260,7 +260,7 @@ int main(int argc, char* argv[]) {
 	}
 	else if (strcmp(argv[1], "--flip") == 0) {
 		// program.exe --flip --bl input_path direction
-		if (strcmp(argv[2], "--bl")) {
+		if (strcmp(argv[2], "--bl") == 0) {
 			interpolate = new BilinearInterpolate();
 			// Đọc ảnh (image) đầu vào)
 			if (argv[3] == nullptr) {
@@ -335,7 +335,7 @@ int main(int argc, char* argv[]) {
 			"\t--rotate: \n"
 			"\t--rotateN: \n"
 			"\t--flip: \n"
-			"\n\nDepartment of Computer Science, University of Science\nAuthor: Nhut-Nam Le"
+			"\n\nDepartment of Computer Science, University of Science\nAuthor: Hoang-Duc Nguyen, Nhut-Nam Le, Hoang-Nam Nguyen, Bao-Son Duong Doan, Dai-Tai Tran\n"
 			;
 	}
 	else {
