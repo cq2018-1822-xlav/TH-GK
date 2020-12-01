@@ -1,110 +1,345 @@
-#include <iostream>
+﻿#include <iostream>
 #include <functional>
-#include <string>
 #include "GeometricTransformer.h"
 
-static int __str_cmp__(const char* string_1, const char* string_2)
-{
-	while (*string_1)
-	{
-		// if characters differ or end of second string is reached
-		if (*string_1 != *string_2)
-			break;
-
-		// move to next pair of characters
-		string_1++;
-		string_2++;
-	}
-
-	// return the ASCII difference after converting char* to unsigned char*
-	return *(const unsigned char*)string_1 - *(const unsigned char*)string_2 == 0 ? 1 : 0;
-}
-
-
 int main(int argc, char* argv[]) {
-	// std::cout << "Hello world" << "\n";
 	GeometricTransformer geometrixTransformer;
+	PixelInterpolate* interpolate;
 
-	cv::Mat translateMatrix = (cv::Mat_<float>(3, 3) << 1, 7, 2, 9, 1, 3, 0, 0, 1);
+	if (strcmp(argv[1], "--zoom") == 0) {
+		// program.exe --zoom --bl image_path he_so_zoom
+		if (strcmp(argv[2], "--bl") == 0) {
+			interpolate = new BilinearInterpolate();
+			// Đọc ảnh (image) đầu vào)
+			// Đọc ảnh (image) đầu vào)
+			if (argv[3] == nullptr) {
+				std::cout << "[Exception].\n";
+				return 0;
+			}
 
-	std::cout << translateMatrix.ptr<float>(1)[0] << std::endl;
+			cv::Mat inputImage = cv::imread(argv[3], cv::IMREAD_ANYCOLOR);
 
-	/*
-	cv::Mat matrix = cv::Mat::eye(3, 3, CV_32FC1);
-	std::cout << translateMatrix << std::endl;
+			// Khởi tạo ảnh đầu ra
+			cv::Mat outputImage;
+			if (argv[4] == nullptr) {
+				std::cout << "[Exception].\n";
+				return 0;
+			}
+			else {
+				geometrixTransformer.Scale(inputImage, outputImage, (float)atof(argv[4]), (float)atof(argv[4]), interpolate);
+			}
+			// Dispay ảnh ra màn hình
+			cv::namedWindow("Input image", cv::WINDOW_AUTOSIZE);
+			cv::imshow("Input image", inputImage);
 
-	for (int i = 0; i < translateMatrix.rows; i++) {
-		for (int j = 0; j < translateMatrix.cols; j++) {
-			std::cout << translateMatrix.at<float>(i, j) << " ";
+			cv::namedWindow("Show result", cv::WINDOW_AUTOSIZE);
+			cv::imshow("Show result", outputImage);
+			cv::waitKey(0);
 		}
-		std::cout << "\n";
+		// program.exe --zoom --nn image_path sx xy
+		else if (strcmp(argv[2], "--nn") == 0) {
+			interpolate = new NearestNeighborInterpolate();
+			// Đọc ảnh (image) đầu vào)
+			// Đọc ảnh (image) đầu vào)
+			if (argv[3] == nullptr) {
+				std::cout << "[Exception].\n";
+				return 0;
+			}
+
+			cv::Mat inputImage = cv::imread(argv[3], cv::IMREAD_ANYCOLOR);
+
+			// Khởi tạo ảnh đầu ra
+			cv::Mat outputImage;
+			if (argv[4] == nullptr) {
+				std::cout << "[Exception].\n";
+				return 0;
+			}
+			else {
+				geometrixTransformer.Scale(inputImage, outputImage, (float)atof(argv[4]), (float)atof(argv[4]), interpolate);
+			}
+			// Dispay ảnh ra màn hình
+			cv::namedWindow("Input image", cv::WINDOW_AUTOSIZE);
+			cv::imshow("Input image", inputImage);
+
+			cv::namedWindow("Show result", cv::WINDOW_AUTOSIZE);
+			cv::imshow("Show result", outputImage);
+			cv::waitKey(0);
+		}
+		else {
+			std::cout << "[EXCEPTION] \n";
+		}
 	}
+	else if (strcmp(argv[1], "--resize") == 0) {
+		// program.exe --resize --bl image_path newWidth newHeight
+		if (strcmp(argv[2], "--bl")) {
+			interpolate = new BilinearInterpolate();
+			// Đọc ảnh (image) đầu vào)
+			if (argv[3] == nullptr) {
+				std::cout << "[Exception].\n";
+				return 0;
+			}
 
-	matrix = matrix * translateMatrix;
+			cv::Mat inputImage = cv::imread(argv[3], cv::IMREAD_ANYCOLOR);
 
-	for (int i = 0; i < matrix.rows; i++) {
-		for (int j = 0; j < matrix.cols; j++) {
-			std::cout << matrix.at<float>(i, j) << " ";
+			// Khởi tạo ảnh đầu ra
+			cv::Mat outputImage;
+			if (argv[4] == nullptr || argv[5] == nullptr || (argv[4] == nullptr && argv[5] == nullptr)) {
+				std::cout << "[Exception].\n";
+				return 0;
+			}
+			else {
+				geometrixTransformer.Resize(inputImage, outputImage, atoi(argv[4]), atoi(argv[5]), interpolate);
+			}
+			// Dispay ảnh ra màn hình
+			cv::namedWindow("Input image", cv::WINDOW_AUTOSIZE);
+			cv::imshow("Input image", inputImage);
+
+			cv::namedWindow("Show result", cv::WINDOW_AUTOSIZE);
+			cv::imshow("Show result", outputImage);
+			cv::waitKey(0);
 		}
-		std::cout << "\n";
-	} */
-	if (__str_cmp__(argv[1], "--zoom")) {
-		if (__str_cmp__(argv[2], "--bl")) {
+		else if (strcmp(argv[2], "--nn") == 0) {
+			// program.exe --resize --nn image_path newWidth newHeight
+			interpolate = new NearestNeighborInterpolate();
+			// Đọc ảnh (image) đầu vào)
+			// Đọc ảnh (image) đầu vào)
+			if (argv[3] == nullptr) {
+				std::cout << "[Exception].\n";
+				return 0;
+			}
 
-		}
-		else if (__str_cmp__(argv[2], "--nn")) {
+			cv::Mat inputImage = cv::imread(argv[3], cv::IMREAD_ANYCOLOR);
+
+			// Khởi tạo ảnh đầu ra
+			cv::Mat outputImage;
+			if (argv[4] == nullptr || argv[5] == nullptr || (argv[4] == nullptr && argv[5] == nullptr)) {
+				std::cout << "[Exception].\n";
+				return 0;
+			}
+			else {
+				geometrixTransformer.Resize(inputImage, outputImage, atoi(argv[4]), atoi(argv[5]), interpolate);
+			}
+			// Dispay ảnh ra màn hình
+			cv::namedWindow("Input image", cv::WINDOW_AUTOSIZE);
+			cv::imshow("Input image", inputImage);
+
+			cv::namedWindow("Show result", cv::WINDOW_AUTOSIZE);
+			cv::imshow("Show result", outputImage);
+			cv::waitKey(0);
 
 		}
 		else {
-
+			std::cout << "[EXCEPTION] \n";
 		}
 	}
-	else if (__str_cmp__(argv[1], "--resize")) {
-		if (__str_cmp__(argv[2], "--bl")) {
+	else if (strcmp(argv[1], "--rotate") == 0) {
+		// program.exe --rotate --bl image_path angle
+		if (strcmp(argv[2], "--bl")) {
+			interpolate = new BilinearInterpolate();
+
+			// Đọc ảnh (image) đầu vào)
+			if (argv[3] == nullptr) {
+				std::cout << "[Exception].\n";
+				return 0;
+			}
+
+			cv::Mat inputImage = cv::imread(argv[3], cv::IMREAD_ANYCOLOR);
+
+			// Khởi tạo ảnh đầu ra
+			cv::Mat outputImage;
+			if (argv[4] == nullptr) {
+				std::cout << "[Exception].\n";
+				return 0;
+			}
+			else {
+				geometrixTransformer.RotateKeepImage(inputImage, outputImage, (float)atof(argv[4]), interpolate);
+			}
+			// Dispay ảnh ra màn hình
+			cv::namedWindow("Input image", cv::WINDOW_AUTOSIZE);
+			cv::imshow("Input image", inputImage);
+
+			cv::namedWindow("Show result", cv::WINDOW_AUTOSIZE);
+			cv::imshow("Show result", outputImage);
+			cv::waitKey(0);
 
 		}
-		else if (__str_cmp__(argv[2], "--nn")) {
+		else if (strcmp(argv[2], "--nn") == 0) {
+			// program.exe --rotate --nn image_path angle
+			interpolate = new NearestNeighborInterpolate();
+			// Đọc ảnh (image) đầu vào)
+			if (argv[3] == nullptr) {
+				std::cout << "[Exception].\n";
+				return 0;
+			}
+
+			cv::Mat inputImage = cv::imread(argv[3], cv::IMREAD_ANYCOLOR);
+
+			// Khởi tạo ảnh đầu ra
+			cv::Mat outputImage;
+			if (argv[4] == nullptr) {
+				std::cout << "[Exception].\n";
+				return 0;
+			}
+			else {
+				geometrixTransformer.RotateKeepImage(inputImage, outputImage, (float)atof(argv[4]), interpolate);
+			}
+			// Dispay ảnh ra màn hình
+			cv::namedWindow("Input image", cv::WINDOW_AUTOSIZE);
+			cv::imshow("Input image", inputImage);
+
+			cv::namedWindow("Show result", cv::WINDOW_AUTOSIZE);
+			cv::imshow("Show result", outputImage);
+			cv::waitKey(0);
+		}
+		else {
+			std::cout << "[EXCEPTION] \n";
+		}
+	}
+	else if (strcmp(argv[1], "--rotateN") == 0) {
+		// program.exe --rotateN --bl image_path angle
+		if (strcmp(argv[2], "--bl")) {
+			interpolate = new BilinearInterpolate();
+			// Đọc ảnh (image) đầu vào)
+			if (argv[3] == nullptr) {
+				std::cout << "[Exception].\n";
+				return 0;
+			}
+
+			cv::Mat inputImage = cv::imread(argv[3], cv::IMREAD_ANYCOLOR);
+
+			// Khởi tạo ảnh đầu ra
+			cv::Mat outputImage;
+			if (argv[4] == nullptr) {
+				std::cout << "[Exception].\n";
+				return 0;
+			}
+			else {
+				geometrixTransformer.RotateUnkeepImage(inputImage, outputImage, (float)atof(argv[4]), interpolate);
+			}
+			// Dispay ảnh ra màn hình
+			cv::namedWindow("Input image", cv::WINDOW_AUTOSIZE);
+			cv::imshow("Input image", inputImage);
+
+			cv::namedWindow("Show result", cv::WINDOW_AUTOSIZE);
+			cv::imshow("Show result", outputImage);
+			cv::waitKey(0);
+
+		}
+		// program.exe --rotateN --nn image_path angle
+		else if (strcmp(argv[2], "--nn")) {
+			interpolate = new NearestNeighborInterpolate();
+			// Đọc ảnh (image) đầu vào)
+			if (argv[3] == nullptr) {
+				std::cout << "[Exception].\n";
+				return 0;
+			}
+
+			cv::Mat inputImage = cv::imread(argv[3], cv::IMREAD_ANYCOLOR);
+
+			// Khởi tạo ảnh đầu ra
+			cv::Mat outputImage;
+			if (argv[4] == nullptr) {
+				std::cout << "[Exception].\n";
+				return 0;
+			}
+			else {
+				geometrixTransformer.RotateUnkeepImage(inputImage, outputImage, (float)atof(argv[4]), interpolate);
+			}
+			// Dispay ảnh ra màn hình
+			cv::namedWindow("Input image", cv::WINDOW_AUTOSIZE);
+			cv::imshow("Input image", inputImage);
+
+			cv::namedWindow("Show result", cv::WINDOW_AUTOSIZE);
+			cv::imshow("Show result", outputImage);
+			cv::waitKey(0);
 
 		}
 		else {
-
+			std::cout << "[EXCEPTION] \n";
 		}
 	}
-	else if (__str_cmp__(argv[1], "--rotate")) {
-		if (__str_cmp__(argv[2], "--bl")) {
+	else if (strcmp(argv[1], "--flip") == 0) {
+		// program.exe --flip --bl input_path direction
+		if (strcmp(argv[2], "--bl")) {
+			interpolate = new BilinearInterpolate();
+			// Đọc ảnh (image) đầu vào)
+			if (argv[3] == nullptr) {
+				std::cout << "[Exception].\n";
+				return 0;
+			}
+
+			cv::Mat inputImage = cv::imread(argv[3], cv::IMREAD_ANYCOLOR);
+
+
+
+			// Khởi tạo ảnh đầu ra
+			cv::Mat outputImage = inputImage.clone();
+			if (strcmp(argv[4], "Ox") == 0) {
+				geometrixTransformer.Flip(inputImage, outputImage, true, interpolate);
+			}
+			else {
+				geometrixTransformer.Flip(inputImage, outputImage, false, interpolate);
+			}
+
+			// Dispay ảnh ra màn hình
+			cv::namedWindow("Input image", cv::WINDOW_AUTOSIZE);
+			cv::imshow("Input image", inputImage);
+			cv::namedWindow("Show result", cv::WINDOW_AUTOSIZE);
+			cv::imshow("Show result", outputImage);
+			cv::waitKey(0);
 
 		}
-		else if (__str_cmp__(argv[2], "--nn")) {
+		// program.exe --flip --nn input_path direction
+		else if (strcmp(argv[2], "--nn") == 0) {
+			interpolate = new NearestNeighborInterpolate();
+			// Đọc ảnh (image) đầu vào)
+			if (argv[3] == nullptr) {
+				std::cout << "[Exception].\n";
+				return 0;
+			}
 
+			cv::Mat inputImage = cv::imread(argv[3], cv::IMREAD_ANYCOLOR);
+
+			// Khởi tạo ảnh đầu ra
+			cv::Mat outputImage = inputImage.clone();
+			if (strcmp(argv[4], "Ox") == 0) {
+				geometrixTransformer.Flip(inputImage, outputImage, true, interpolate);
+			}
+			else {
+				geometrixTransformer.Flip(inputImage, outputImage, false, interpolate);
+			}
+
+			// Dispay ảnh ra màn hình
+			cv::namedWindow("Input image", cv::WINDOW_AUTOSIZE);
+			cv::imshow("Input image", inputImage);
+
+			cv::namedWindow("Show result", cv::WINDOW_AUTOSIZE);
+			cv::imshow("Show result", outputImage);
+			cv::waitKey(0);
 		}
 		else {
-
+			std::cout << "[EXCEPTION] \n";
 		}
 	}
-	else if (__str_cmp__(argv[1], "--rotateN")) {
-		if (__str_cmp__(argv[2], "--bl")) {
-
-		}
-		else if (__str_cmp__(argv[2], "--nn")) {
-
-		}
-		else {
-
-		}
-	}
-	else if (__str_cmp__(argv[1], "--flip")) {
-		if (__str_cmp__(argv[2], "--bl")) {
-
-		}
-		else if (__str_cmp__(argv[2], "--nn")) {
-
-		}
-		else {
-
-		}
+	else if (strcmp(argv[1], "--help") || strcmp(argv[1], "--h")) {
+		std::cout << "Usage: <Program.exe> <Command> <Interpolate> <InputPath> <CmdArguments>\n"
+			"\t<Program.exe>: \n"
+			"\t<Command>: \n"
+			"\t<Interpolate>:\n"
+			"\t\t --bl: Bilinear interpolate\n"
+			"\t\t --nn: Nearest neighbor interpolate\n"
+			"\t<InputPath>: Input image's path\n"
+			"\t<CmdArguments>: \n"
+			"\t--zoom: \n"
+			"\t--resize: \n"
+			"\t--rotate: \n"
+			"\t--rotateN: \n"
+			"\t--flip: \n"
+			"\n\nDepartment of Computer Science, University of Science\nAuthor: Nhut-Nam Le"
+			;
 	}
 	else {
-
+		std::cout << "[EXCEPTION] \n";
 	}
 	return 0;
 }

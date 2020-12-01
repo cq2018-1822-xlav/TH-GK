@@ -63,6 +63,8 @@ class AffineTransform
 	cv::Mat _matrixTransform; //ma trận 3x3 biểu diễn phép biến đổi affine
 
 public:
+	cv::Mat getMatrixTransform();
+	void setMatrixTransform(cv::Mat matrixTransform);
 	void Translate(float dx, float dy);// xây dựng matrix transform cho phép tịnh tiến theo vector (dx,dy)
 	void Rotate(float angle);//xây dựng matrix transform cho phép xoay 1 góc angle
 	void Scale(float sx, float sy);//xây dựng matrix transform cho phép tỉ lệ theo hệ số 		
