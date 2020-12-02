@@ -435,8 +435,121 @@ int ColorTransformer::DrawHistogram(const cv::Mat& histMatrix, cv::Mat& histImag
 
 float ColorTransformer::CompareImage(const cv::Mat& image1, cv::Mat& image2)
 {
-	// TODO: Implement with your code
-	return 0.0f;
+	if (!image1.data || image2.data) {
+		// Chuyển đổi ảnh thất bại: in ra màn hình console tin nhắn
+		std::cout << "[EXCEPTION] Error with input image.\n";
+		return -1; // Trả về 1
+	}
+	//khởi tạo 2 histogram
+	Mat hist1;
+	Mat hist2;
+	//Tính histogram của 2 ảnh
+	CalcHistogram(image1, hist1);
+	CalcHistogram(image2, hist2);
+	//Tính số channels của 2 histogram
+	int hist1Channels = hist1.channels();
+	int hist2Channels = hist2.channels();
+	//Khởi tạo biến đếm tổng các phần tử trong histogram
+	float sum1 = 0;
+	float sum2 = 0;
+	//Mảng 2 chiều lưu trữ các phần tử histogram
+	float arr1[3][256];
+	float arr2[3][256];
+	//Biến kết quả
+	float result = 0;
+	if (image1.channels() == 1 && image2.channels() == 1)
+	{
+
+		// con trỏ data của histogram 1
+		uchar* ptrHistMatrixData1 = hist1.data;
+		for (int x = 0; x <= 255; x++, ptrHistMatrixData1 += hist1Channels) {
+
+			//lấy giá của histogram lưu vào mảng
+			arr1[0][x] = int(*ptrHistMatrixData1);
+			//Tính tổng các phần tử
+			sum1 += arr1[0][x];
+
+		}
+		// con trỏ data của histogram 1
+		uchar* ptrHistMatrixData2 = hist2.data;
+		for (int x = 0; x <= 255; x++, ptrHistMatrixData2 += hist2Channels) {
+			//lấy giá của histogram lưu vào mảng
+			arr2[0][x] = int(*ptrHistMatrixData2);
+			//Tính tổng các phần tử
+			sum2 += arr2[0][x];
+
+		}
+
+		for (int i = 0; i <= 255; i++)
+		{
+			//Chuẩn hóa các phần tử trong histogram
+			arr1[0][i] = arr1[0][i] / sum1;
+			arr2[0][i] = arr2[0][i] / sum2;
+			//Tính độ tương đồng của 2 ảnh
+			result += (arr1[0][i] - arr2[0][i]) * (arr1[0][i] - arr2[0][i]);
+		}
+
+		return sqrt(result);
+	}
+
+	else if (image1.channels() == 3 && image2.channels() == 3)
+	{
+		// con trỏ data của histogram 1
+		uchar* ptrHistMatrixData1 = hist1.data;
+		size_t hist1Step = hist1.step[0];
+		uchar* blueHist1Data = hist1.data;
+		uchar* greenHist1Data = hist1.data + hist1Step;
+		uchar* redHist1Data = hist1.data + hist1Step + hist1Step;
+
+		for (int x = 0; x <= 255; x++, blueHist1Data += hist1Channels) {
+
+			//lấy giá của histogram lưu vào mảng
+			arr1[0][x] = int(*blueHist1Data);
+
+			arr1[1][x] = int(*greenHist1Data);
+
+			arr1[2][x] = int(*redHist1Data);
+			//Tính tổng các phần tử
+			sum1 += arr1[0][x];
+
+
+		}
+		// con trỏ data của histogram 1
+		uchar* ptrHistMatrixData2 = hist2.data;
+		size_t hist2Step = hist2.step[0];
+		uchar* blueHist2Data = hist2.data;
+		uchar* greenHist2Data = hist2.data + hist2Step;
+		uchar* redHist2Data = hist2.data + hist2Step + hist2Step;
+		for (int x = 0; x <= 255; x++, blueHist2Data += hist2Channels) {
+
+			//lấy giá của histogram lưu vào mảng
+			arr2[0][x] = int(*blueHist2Data);
+
+			arr2[1][x] = int(*greenHist2Data);
+
+			arr2[2][x] = int(*redHist2Data);
+			//Tính tổng các phần tử
+			sum2 += arr2[0][x];
+
+
+		}
+		for (int j = 0; j < 3; j++) {
+			for (int i = 0; i <= 255; i++)
+			{
+				//Chuẩn hóa các phần tử trong histogram
+				arr1[j][i] /= sum1;
+				arr2[j][i] /= sum2;
+				//Tính độ tương đồng của 2 ảnh
+				result += (arr1[j][i] - arr2[j][i]) * (arr1[j][i] - arr2[j][i]);
+			}
+		}
+
+		return sqrt(result);
+	}
+	else {
+		cout << "\ncan not compare 2 image" << endl;
+		return -1;
+	}
 }
 
 ColorTransformer::ColorTransformer() = default;
