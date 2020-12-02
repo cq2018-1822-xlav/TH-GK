@@ -180,18 +180,12 @@ int main(int argc, char* argv[]) {
 		// Tính histogram của ảnh
 		cv::Mat histogram_inputImage;
 		colorTransfer.CalcHistogram(inputImage, histogram_inputImage);
-
+		std::cout << histogram_inputImage << std::endl;
 		// Dispay ảnh ra màn hình
 		cv::namedWindow("Input image", cv::WINDOW_AUTOSIZE);
 		cv::imshow("Input image", inputImage);
-
-		cv::namedWindow("Show result", cv::WINDOW_AUTOSIZE);
-		cv::imshow("Show result", histogram_inputImage);
 		cv::waitKey(0);
-
 		cv::destroyWindow("Input image");
-		cv::destroyWindow("Show result");
-
 	}
 	else if (__str_cmp__(argv[1], "--equalhist")) {
 		// --equalhist
@@ -208,12 +202,9 @@ int main(int argc, char* argv[]) {
 		// Dispay ảnh ra màn hình
 		cv::namedWindow("Input image", cv::WINDOW_AUTOSIZE);
 		cv::imshow("Input image", inputImage);
-
 		cv::namedWindow("Show result equalization", cv::WINDOW_AUTOSIZE);
 		cv::imshow("Show result equalization", outputImage);
-
 		cv::waitKey(0);
-
 		cv::destroyWindow("Input image");
 		cv::destroyWindow("Show result equalization");
 	}
@@ -236,7 +227,6 @@ int main(int argc, char* argv[]) {
 
 		cv::namedWindow("Show histogram", cv::WINDOW_AUTOSIZE);
 		cv::imshow("Show histogram", histogram_inputImage);
-
 		cv::waitKey(0);
 
 		cv::destroyWindow("Input image");
