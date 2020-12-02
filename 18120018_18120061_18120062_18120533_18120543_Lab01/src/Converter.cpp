@@ -111,10 +111,8 @@ Hàm trả về
 int Converter::RGB2HSV(const cv::Mat& sourceImage, cv::Mat& destinationImage)
 {
 	if (sourceImage.data == NULL) {
-		return 0;
+		return 1;
 	}
-
-	//
 
 	int width = sourceImage.cols;
 	int heigth = sourceImage.rows;
@@ -135,15 +133,15 @@ int Converter::RGB2HSV(const cv::Mat& sourceImage, cv::Mat& destinationImage)
 
 		for (int x = 0; x < width; x++, pSrcRow += srcChannels, pDstRow += dstChannels) {
 			//RGB:
-			uchar blue = pSrcRow[0];
-			uchar green = pSrcRow[1];
-			uchar red = pSrcRow[2];
+			float blue = 1.0 * pSrcRow[0] / 255;
+			float green = 1.0 * pSrcRow[1] / 255;
+			float red = 1.0 * pSrcRow[2] / 255;
 			//HSV:
-			uchar h;
-			uchar s;
-			uchar v;
+			float h;
+			float s;
+			float v;
 			//Convert:
-			uchar Cmin, Cmax;
+			float Cmin, Cmax;
 			Cmin = blue < green ? blue : green;
 			Cmin = Cmin < red ? Cmin : red;
 
@@ -156,24 +154,25 @@ int Converter::RGB2HSV(const cv::Mat& sourceImage, cv::Mat& destinationImage)
 				s = 0;
 			}
 			else {
-				s = (uchar)((v - Cmin) / v);
+				s = (v - Cmin) / v;
 				if (v == red)
-					h = (uchar)(43 * (green - blue) / (v - Cmin));//43=(60/360).255;
+					h = 60 * (green - blue) / (v - Cmin);
 				else if (v == green)
-					h = (uchar)(85 + 43 * (blue - red) / (v - Cmin));//85=(120/360).255;
+					h = 120 + 60 * (blue - red) / (v - Cmin);
 				else
-					h = (uchar)(170 + 43 * (red - green) / (v - Cmin));//170=(240/360).255;
+					h = 240 + 60 * (red - green) / (v - Cmin);
 			}
 			if (h < 0) {
-				h += 255;
+				h += 360;
 			}
 			//[[h],[s],[v]] ;
 			// std::cout << "[" <</* int(h) << int(s) <<*/ int(v) << "]";
-			pDstRow[0] = h;
-			pDstRow[1] = s;
-			pDstRow[2] = v;
+			pDstRow[0] = (uchar)(h / 2);
+			pDstRow[1] = (uchar)(s * 255);
+			pDstRow[2] = (uchar)(v * 255);
 		}
 	}
+
 	return 1;
 }
 

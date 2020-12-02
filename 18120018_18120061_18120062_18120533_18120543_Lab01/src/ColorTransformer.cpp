@@ -120,7 +120,7 @@ int ColorTransformer::ChangeContrast(const cv::Mat& sourceImage, cv::Mat& destin
 			for (int x = 0; x < width; x++, pSrcRow += srcChannels, pDstRow += desChannels)
 			{
 				//lấy giá trị kênh màu nhân với c, sau đó gán qua destinationImage
-				pDstRow[0] = saturate_cast<uchar>(pSrcRow[0] * c);
+				pDstRow[0] = cv::saturate_cast<uchar>(pSrcRow[0] * c);
 			}
 
 
@@ -145,11 +145,11 @@ int ColorTransformer::ChangeContrast(const cv::Mat& sourceImage, cv::Mat& destin
 
 				// lấy giá trị kênh màu nhân với c, sau đó gán qua destinationImage
 
-				ptrDesRow[0] = saturate_cast<uchar>(ptrSourceRow[0] * c);
+				ptrDesRow[0] = cv::saturate_cast<uchar>(ptrSourceRow[0] * c);
 
-				ptrDesRow[1] = saturate_cast<uchar>(ptrSourceRow[1] * c);
+				ptrDesRow[1] = cv::saturate_cast<uchar>(ptrSourceRow[1] * c);
 
-				ptrDesRow[2] = saturate_cast<uchar>(ptrSourceRow[2] * c);
+				ptrDesRow[2] = cv::saturate_cast<uchar>(ptrSourceRow[2] * c);
 
 
 			}
@@ -165,6 +165,131 @@ int ColorTransformer::ChangeContrast(const cv::Mat& sourceImage, cv::Mat& destin
 
 int ColorTransformer::CalcHistogram(const cv::Mat& sourceImage, cv::Mat& histMatrix)
 {
+	// Kiểm tra ảnh đầu vào
+	if (!sourceImage.data) {
+		std::cout << "Exception: Can not calculate the histogram of image.\n";
+		return 0;
+	}
+
+	// Chiều rộng của ảnh source
+	int width = sourceImage.cols;
+
+	// Chiều cao của ảnh source
+	int heigth = sourceImage.rows;
+
+	// Số channels của ảnh source
+	int sourceChannels = sourceImage.channels();
+
+	// Nếu ảnh đầu vào là ảnh GrayScale
+	if (sourceImage.channels() == 1) {
+		// Khởi tạo ảnh histogram matrix với thông số height = 1, width = 256
+		histMatrix = cv::Mat(1, 256, CV_32S, cv::Scalar(0));
+
+		// Số channels của ảnh destination
+		int histMatrixChannels = histMatrix.channels();
+
+		// Widthstep của ảnh source
+		size_t sourceWidthStep = sourceImage.step[0];
+
+		// Widthstep của ảnh destination
+		size_t histMatrixWidthStep = histMatrix.step[0];
+
+		// Con trỏ quản lý vùng nhớ data ảnh source
+		uchar* ptrSourceData = sourceImage.data;
+
+		// Con trỏ quản lý vùng nhớ data ảnh destination
+		int* ptrHistMatrixData = histMatrix.ptr<int>(0);
+
+		for (int y = 0; y < heigth; y++, ptrSourceData += sourceWidthStep) {
+			uchar* ptrSourceRow = ptrSourceData;
+			for (int x = 0; x < width; x++, ptrSourceRow += sourceChannels) {
+
+				uchar gray = ptrSourceRow[0];
+				ptrHistMatrixData[gray] += 1;
+			}
+		}
+
+		int sum = 0;
+		for (int i = 0; i < 256; i++) {
+			sum += ptrHistMatrixData[i];
+		}
+
+		std::cout << sum << std::endl;
+
+		std::cout << "Success: Calculated the histogram of image.\n";
+		return 1;
+	}
+
+	// Nếu ảnh đầu vào là ảnh RGB
+	else if (sourceImage.channels() == 3) {
+
+
+		// Khởi tạo ảnh histogram matrix với thông số height = 3, width = 256
+		histMatrix = cv::Mat(3, 256, CV_32S, cv::Scalar(0));
+		// std::vector<std::vector<int>> histVector(3, std::vector<int>(256, 0));
+
+		// Số channels của ảnh destination
+		int histMatrixChannels = histMatrix.channels();
+
+		// Widthstep của ảnh source
+		size_t sourceWidthStep = sourceImage.step[0];
+
+		// Widthstep của ảnh destination
+		size_t histMatrixWidthStep = histMatrix.step[0];
+
+		// Con trỏ quản lý vùng nhớ data ảnh source
+		uchar* ptrSourceData = sourceImage.data;
+
+		// Con trỏ quản lý vùng nhớ data ảnh destination
+		int* blueHistMatrixData = histMatrix.ptr<int>(0);
+		int* greenHistMatrixData = histMatrix.ptr<int>(1);
+		int* redHistMatrixData = histMatrix.ptr<int>(2);
+
+		for (int y = 0; y < heigth; y++, ptrSourceData += sourceWidthStep) {
+			uchar* ptrSourceRow = ptrSourceData;
+			for (int x = 0; x < width; x++, ptrSourceRow += sourceChannels) {
+
+				// Lấy giá trị kênh màu Blue của ảnh source
+				uchar blue = ptrSourceRow[0];
+
+				// Lấy giá trị kênh màu Green của ảnh source
+				uchar green = ptrSourceRow[1];
+
+				// Lấy giá trị kênh màu Red của ảnh source
+				uchar red = ptrSourceRow[2];
+
+				// Blue
+				blueHistMatrixData[blue] += 1;
+				// Green
+				greenHistMatrixData[green] += 1;
+				// Red
+				redHistMatrixData[red] += 1;
+			}
+		}
+
+		int sum_blue = 0;
+		for (int i = 0; i < 256; i++) {
+			sum_blue += blueHistMatrixData[i];
+		}
+
+		std::cout << sum_blue << std::endl;
+		int sum_green = 0;
+		for (int i = 0; i < 256; i++) {
+			sum_green += greenHistMatrixData[i];
+		}
+
+		std::cout << sum_green << std::endl;
+		int sum_red = 0;
+		for (int i = 0; i < 256; i++) {
+			sum_red += redHistMatrixData[i];
+		}
+
+		std::cout << sum_red << std::endl;
+
+		std::cout << "Success: Calculated the histogram of image.\n";
+		return 1;
+	}
+	std::cout << "Exception: Can not calculate the histogram of image.\n";
 	return 0;
 }
 
@@ -435,14 +560,14 @@ int ColorTransformer::DrawHistogram(const cv::Mat& histMatrix, cv::Mat& histImag
 
 float ColorTransformer::CompareImage(const cv::Mat& image1, cv::Mat& image2)
 {
-	if (!image1.data || image2.data) {
+	if (!image1.data || !image2.data) {
 		// Chuyển đổi ảnh thất bại: in ra màn hình console tin nhắn
 		std::cout << "[EXCEPTION] Error with input image.\n";
 		return -1; // Trả về 1
 	}
 	//khởi tạo 2 histogram
-	Mat hist1;
-	Mat hist2;
+	cv::Mat hist1;
+	cv::Mat hist2;
 	//Tính histogram của 2 ảnh
 	CalcHistogram(image1, hist1);
 	CalcHistogram(image2, hist2);
@@ -547,7 +672,7 @@ float ColorTransformer::CompareImage(const cv::Mat& image1, cv::Mat& image2)
 		return sqrt(result);
 	}
 	else {
-		cout << "\ncan not compare 2 image" << endl;
+		std::cout << "\ncan not compare 2 image" << std::endl;
 		return -1;
 	}
 }

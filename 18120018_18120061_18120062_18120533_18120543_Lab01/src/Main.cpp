@@ -247,11 +247,11 @@ int main(int argc, char* argv[]) {
 		// code
 		// Đọc ảnh (image) đầu vào)
 		cv::Mat inputImage1 = cv::imread(argv[2], cv::IMREAD_ANYCOLOR);
-		cv::Mat inputImage2 = cv::imread(argv[2], cv::IMREAD_ANYCOLOR);
+		cv::Mat inputImage2 = cv::imread(argv[3], cv::IMREAD_ANYCOLOR);
 
 		// So sánh hai ảnh
 		// TODO: add some code here.
-
+		std::cout << "Correlation between 2 images: " << colorTransfer.CompareImage(inputImage1, inputImage2) << "\n";
 		// Dispay ảnh ra màn hình
 		cv::namedWindow("Input image 1", cv::WINDOW_AUTOSIZE);
 		cv::imshow("Input image 1", inputImage1);
