@@ -8,7 +8,6 @@ int ColorTransformer::ChangeBrighness(const cv::Mat& sourceImage, cv::Mat& desti
 		std::cout << "[EXCEPTION] Error with input image.\n";
 		return 1; // Trả về 1
 	}
-
 	// Chiều rộng của ảnh source
 	int width = sourceImage.cols;
 
@@ -117,29 +116,31 @@ int ColorTransformer::HistogramEqualization(const cv::Mat& sourceImage, cv::Mat&
 
 	// Chiều rộng của ảnh source
 	int width = sourceImage.cols;
-
 	// Chiều cao của ảnh source
 	int heigth = sourceImage.rows;
-
+	// Diện tích area của ảnh
 	int area = width * heigth;
-
 	// Số channels của ảnh source
 	int sourceChannels = sourceImage.channels();
 
 	// Mode
 	int mode;
 
+	// Mảng chứa blue histogram có 256 phần tử
 	int blueHistogram[256];
+	// Mảng chứa green histogram có 256 phần tử
 	int greenHistogram[256];
+	// Mảng chứa red histogram có 256 phần tử
 	int redHistogram[256];
-
+	// Mảng chứa gray histogram có 256 phần tử
 	int grayHistogram[256];
 
+	// Vòng lặp khởi tạo giá trị cho các mảng trên có giá trị bằng 0
 	for (int i = 0; i < 256; i++) {
 		blueHistogram[i] = 0;
 		greenHistogram[i] = 0;
 		redHistogram[i] = 0;
-
+		//
 		grayHistogram[i] = 0;
 	}
 
@@ -156,25 +157,20 @@ int ColorTransformer::HistogramEqualization(const cv::Mat& sourceImage, cv::Mat&
 		destinationImage = cv::Mat(heigth, width, CV_8UC1, cv::Scalar(0));
 
 	}
-
 	// Số channels của ảnh destination
 	int destinationChannels = destinationImage.channels();
-
 	// Widthstep của ảnh source
 	size_t sourceWidthStep = sourceImage.step[0];
-
 	// Widthstep của ảnh destination
 	size_t destinationWidthStep = destinationImage.step[0];
-
 	// Con trỏ quản lý vùng nhớ data ảnh source
 	uchar* ptrSourceData = sourceImage.data;
-
 	// Con trỏ quản lý vùng nhớ data ảnh destination
 	uchar* ptrDestinationData = destinationImage.data;
 
+	// Tính histogram
 	for (int y = 0; y < heigth; y++, ptrSourceData += sourceWidthStep) {
 		uchar* ptrSourceRow = ptrSourceData;
-
 		for (int x = 0; x < width; x++, ptrSourceRow += sourceChannels) {
 			if (mode == 3) {
 				// Lấy giá trị kênh màu Blue của ảnh source
@@ -198,10 +194,14 @@ int ColorTransformer::HistogramEqualization(const cv::Mat& sourceImage, cv::Mat&
 		}
 	}
 
+	// Con trỏ ptrSourceData nắm phần data của sourceImage
 	ptrSourceData = sourceImage.data;
 
+	// Nếu là ảnh grayscale: Cân bằng lược đồ xám
 	if (mode == 1) {
 		int grayEqualization[256];
+
+		// T[0] = H[0]
 		grayEqualization[0] = grayHistogram[0];
 
 		for (int i = 1; i < 256; i++) {
@@ -260,13 +260,10 @@ int ColorTransformer::HistogramEqualization(const cv::Mat& sourceImage, cv::Mat&
 			for (int x = 0; x < width; x++, ptrSourceRow += sourceChannels, ptrDestinationRow += destinationChannels) {
 				// Lấy giá trị kênh màu Blue của ảnh source
 				uchar blue = ptrSourceRow[0];
-
 				// Lấy giá trị kênh màu Green của ảnh source
 				uchar green = ptrSourceRow[1];
-
 				// Lấy giá trị kênh màu Red của ảnh source
 				uchar red = ptrSourceRow[2];
-
 				// Gán giá trị độ xám vừa lấy được vào kênh màu Blue của ảnh destination
 				ptrDestinationRow[0] = blueEqualization[blue];
 				// Gán giá trị độ xám vừa lấy được vào kênh màu Green của ảnh destination
@@ -300,7 +297,7 @@ int ColorTransformer::DrawHistogram(const cv::Mat& histMatrix, cv::Mat& histImag
 	// Vẽ histogram cho ảnh grayscale
 	if (hist.rows == 1)
 	{
-		std::cout << "Gray";
+
 		uchar* ptrHistMatrixData = hist.data;
 		uchar max = *ptrHistMatrixData;
 

@@ -10,77 +10,51 @@ Hàm trả về
 */
 int Converter::RGB2GrayScale(const cv::Mat& sourceImage, cv::Mat& destinationImage)
 {
-	// Kiểm trả ảnh đầu vào
-	if (!sourceImage.data) {
-		// Chuyển đổi ảnh thất bại: in ra màn hình console tin nhắn
-		std::cout << "[EXCEPTION] Error with input image.\n";
-		return 1; // Trả về 1
+	// Kiểm tra ảnh đầu vào
+	if (sourceImage.data == NULL) {
+		return 0;
 	}
 
-	// Check the source image is RGB type?
-	if (sourceImage.type() != CV_8UC3)
-	{
-		// Chuyển đổi ảnh thất bại: in ra màn hình console tin nhắn
-		std::cout << "[EXCEPTION] Error with type of input image.\n";
-		return 1; // Trả về 1
-	}
+	// Khai báo các hệ số alpha_1, alpha_2, alpha_3
+	float alpha1 = 0.11;
+	float alpha2 = 0.59;
+	float alpha3 = 0.3;
 
-	// Chiều rộng của ảnh source
+	// Chiều rộng của ảnh
 	int width = sourceImage.cols;
-
-	// Chiều cao của ảnh source
+	// Chiều cao của ảnh
 	int heigth = sourceImage.rows;
-
 	// Số channels của ảnh source
-	int sourceChannels = sourceImage.channels();
+	int srcChannels = sourceImage.channels();
+	// Số channels của ảnh đích
+	int dstChannels = destinationImage.channels();
 
-	// Khởi tạo ảnh destination là ảnh grayscale với thông số height, width
-	destinationImage = cv::Mat(heigth, width, CV_8UC1, cv::Scalar(0));
+	// Tạo ảnh destination
+	destinationImage = cv::Mat(heigth, width, CV_8UC1);
 
-	// Số channels của ảnh destination
-	int destinationChannels = destinationImage.channels();
+	// Witdth step của ảnh source
+	int srcWidthStep = sourceImage.step[0];
+	// Witdth step của ảnh destination
+	int dstWidthStep = destinationImage.step[0];
 
-	// Widthstep của ảnh source
-	size_t sourceWidthStep = sourceImage.step[0];
+	// Con trỏ vùng data ảnh source
+	uchar* pSrcData = sourceImage.data;
+	// Con trỏ vùng data ảnh destination
+	uchar* pDstData = destinationImage.data;
 
-	// Widthstep của ảnh destination
-	size_t destinationWidthStep = destinationImage.step[0];
+	for (int y = 0; y < heigth; y++, pSrcData += srcWidthStep, pDstData += dstWidthStep) {
+		uchar* pSrcRow = pSrcData;
+		uchar* pDstRow = pDstData;
 
-	// Con trỏ quản lý vùng nhớ data ảnh source
-	uchar* ptrSourceData = sourceImage.data;
-
-	// Con trỏ quản lý vùng nhớ data ảnh destination
-	uchar* ptrDestinationData = destinationImage.data;
-
-	for (int y = 0; y < heigth; y++, ptrSourceData += sourceWidthStep, ptrDestinationData += destinationWidthStep) {
-		uchar* ptrSourceRow = ptrSourceData;
-		uchar* ptrDestinationRow = ptrDestinationData;
-
-		for (int x = 0; x < width; x++, ptrSourceRow += sourceChannels, ptrDestinationRow += destinationChannels) {
-			// Lấy giá trị kênh màu Blue của ảnh source
-			uchar blue = ptrSourceRow[0];
-
-			// Lấy giá trị kênh màu Green của ảnh source
-			uchar green = ptrSourceRow[1];
-
-			// Lấy giá trị kênh màu Red của ảnh source
-			uchar red = ptrSourceRow[2];
-
-			// Tính toán giá trị độ xám: // 0.2989 R + 0.5870 G + 0.1141 B
-			uchar grayValue = (uchar)(0.1141 * blue + 0.5870 * green + 0.2989 * red);
-
-			// Gán giá trị độ xám vừa tính được vào kênh vào của ảnh destination
-			ptrDestinationRow[0] = grayValue;
+		for (int x = 0; x < width; x++, pSrcRow += srcChannels, pDstRow += dstChannels) {
+			uchar blue = pSrcRow[0];
+			uchar green = pSrcRow[1];
+			uchar red = pSrcRow[2];
+			uchar gray_value = (uchar)(blue * alpha1 + green * alpha2 + red * alpha3);
+			pDstRow[0] = gray_value;
 		}
 	}
-
-	// Lưu ảnh xuống đĩa
-	cv::imwrite("result_rgb_to_grayscale.jpg", destinationImage);
-
-
-	// Chuyển đổi ảnh thành công: in ra màn hình console tin nhắn
-	std::cout << "Sucess: converted image from RGB to GrayScale.\n";
-	return 0;
+	return 1;
 }
 
 /*
@@ -93,70 +67,37 @@ Hàm trả về
 */
 int Converter::GrayScale2RGB(const cv::Mat& sourceImage, cv::Mat& destinationImage)
 {
-	// Kiểm trả ảnh đầu vào
-	if (!sourceImage.data) {
-		// Chuyển đổi ảnh thất bại: in ra màn hình console tin nhắn
-		std::cout << "[EXCEPTION] Error with input image.\n";
-		return 1; // Trả về 1
+	if (sourceImage.data == NULL) {
+		return 0;
 	}
 
-	// Check the source image is Gray Scale type?
-	if (sourceImage.type() != CV_8UC1) {
-		// Chuyển đổi ảnh thất bại: in ra màn hình console tin nhắn
-		std::cout << "[EXCEPTION] Error with type of input image.\n";
-		return 0; // Trả về 1
-	}
 
-	// Chiều rộng của ảnh source
 	int width = sourceImage.cols;
-
-	// Chiều cao của ảnh source
 	int heigth = sourceImage.rows;
 
-	// Số channels của ảnh source
-	int sourceChannels = sourceImage.channels();
+	destinationImage = cv::Mat(heigth, width, CV_8UC3);
+	int srcChannels = sourceImage.channels();
+	int dstChannels = destinationImage.channels();
 
-	// Khởi tạo ảnh destination là ảnh RGB với thông số height, width
-	destinationImage = cv::Mat(sourceImage.rows, sourceImage.cols, CV_8UC3, cv::Scalar(0));
+	int srcWidthStep = sourceImage.step[0];
+	int dstWidthStep = destinationImage.step[0];
 
-	// Số channels của ảnh destination
-	int destinationChannels = destinationImage.channels();
+	uchar* pSrcData = sourceImage.data;
+	uchar* pDstData = destinationImage.data;
 
-	// Widthstep của ảnh source
-	size_t sourceWidthStep = sourceImage.step[0];
+	for (int y = 0; y < heigth; y++, pSrcData += srcWidthStep, pDstData += dstWidthStep) {
+		uchar* pSrcRow = pSrcData;
+		uchar* pDstRow = pDstData;
 
-	// Widthstep của ảnh destination
-	size_t destinationWidthStep = destinationImage.step[0];
-
-	// Con trỏ quản lý vùng nhớ data ảnh source
-	uchar* ptrSourceData = sourceImage.data;
-
-	// Con trỏ quản lý vùng nhớ data ảnh destination
-	uchar* ptrDestinationData = destinationImage.data;
-
-	// For each line
-	for (int y = 0; y < heigth; y++, ptrSourceData += sourceWidthStep, ptrDestinationData += destinationWidthStep) {
-		uchar* ptrSourceRow = ptrSourceData;
-		uchar* ptrDestinationRow = ptrDestinationData;
-
-		for (int x = 0; x < width; x++, ptrSourceRow += sourceChannels, ptrDestinationRow += destinationChannels) {
-			// Lấy giá trị kênh màu gray của ảnh source
-			uchar gray = ptrSourceRow[0];
-			// Gán giá trị độ xám vừa lấy được vào kênh màu Blue của ảnh destination
-			ptrDestinationRow[0] = gray;
-			// Gán giá trị độ xám vừa lấy được vào kênh màu Green của ảnh destination
-			ptrDestinationRow[1] = gray;
-			// Gán giá trị độ xám vừa lấy được vào kênh màu Red của ảnh destination
-			ptrDestinationRow[2] = gray;
+		for (int x = 0; x < width; x++, pSrcRow += srcChannels, pDstRow += dstChannels) {
+			uchar gray_value = pSrcRow[0];
+			pDstRow[0] = gray_value;
+			pDstRow[1] = gray_value;
+			pDstRow[2] = gray_value;
 		}
 	}
 
-	// Lưu ảnh xuống đĩa
-	cv::imwrite("result_grayscale_to_rgb.jpg", destinationImage);
-
-	// Chuyển đổi ảnh thành công: in ra màn hình console tin nhắn
-	std::cout << "Sucess: converted image from GrayScale to RGB.\n";
-	return 0;
+	return 1;
 }
 
 /*
@@ -169,114 +110,71 @@ Hàm trả về
 */
 int Converter::RGB2HSV(const cv::Mat& sourceImage, cv::Mat& destinationImage)
 {
-	// Kiểm trả ảnh đầu vào
-	if (!sourceImage.data) {
-		// Chuyển đổi ảnh thất bại: in ra màn hình console tin nhắn
-		std::cout << "[EXCEPTION] Error with input image.\n";
-		return 1; // Trả về 1
+	if (sourceImage.data == NULL) {
+		return 0;
 	}
 
-	// Check the source image is RGB type?
-	if (sourceImage.type() != CV_8UC3)
-	{
-		// Chuyển đổi ảnh thất bại: in ra màn hình console tin nhắn
-		std::cout << "[EXCEPTION] Error with type of input image.\n";
-		return 1; // Trả về 1
-	}
+	//
 
-	// Chiều rộng của ảnh source
 	int width = sourceImage.cols;
-
-	// Chiều cao của ảnh source
 	int heigth = sourceImage.rows;
 
-	// Số channels của ảnh source
-	int sourceChannels = sourceImage.channels();
+	destinationImage = cv::Mat(heigth, width, CV_8UC3);
+	int srcChannels = sourceImage.channels();
+	int dstChannels = destinationImage.channels();
 
-	// Khởi tạo ảnh destination là ảnh HSV với thông số height, width
-	destinationImage = cv::Mat(heigth, width, CV_8UC3, cv::Scalar(0));
+	int srcWidthStep = sourceImage.step[0];
+	int dstWidthStep = destinationImage.step[0];
 
-	// Số channels của ảnh destination
-	int destinationChannels = destinationImage.channels();
+	uchar* pSrcData = sourceImage.data;
+	uchar* pDstData = destinationImage.data;
 
-	// Widthstep của ảnh source
-	size_t sourceWidthStep = sourceImage.step[0];
+	for (int y = 0; y < heigth; y++, pSrcData += srcWidthStep, pDstData += dstWidthStep) {
+		uchar* pSrcRow = pSrcData;
+		uchar* pDstRow = pDstData;
 
-	// Widthstep của ảnh destination
-	size_t destinationWidthStep = destinationImage.step[0];
+		for (int x = 0; x < width; x++, pSrcRow += srcChannels, pDstRow += dstChannels) {
+			//RGB:
+			uchar blue = pSrcRow[0];
+			uchar green = pSrcRow[1];
+			uchar red = pSrcRow[2];
+			//HSV:
+			uchar h;
+			uchar s;
+			uchar v;
+			//Convert:
+			uchar Cmin, Cmax;
+			Cmin = blue < green ? blue : green;
+			Cmin = Cmin < red ? Cmin : red;
 
-	// Con trỏ quản lý vùng nhớ data ảnh source
-	uchar* ptrSourceData = sourceImage.data;
+			Cmax = blue > green ? blue : green;
+			Cmax = Cmax > red ? Cmax : red;
 
-	// Con trỏ quản lý vùng nhớ data ảnh destination
-	uchar* ptrDestinationData = destinationImage.data;
-
-	for (int y = 0; y < heigth; y++, ptrSourceData += sourceWidthStep, ptrDestinationData += destinationWidthStep) {
-		uchar* ptrSourceRow = ptrSourceData;
-		uchar* ptrDestinationRow = ptrDestinationData;
-
-		for (int x = 0; x < width; x++, ptrSourceRow += sourceChannels, ptrDestinationRow += destinationChannels) {
-			float blueValue = 1.0 * ptrSourceRow[0] / 255;
-			float greenValue = 1.0 * ptrSourceRow[1] / 255;
-			float redValue = 1.0 * ptrSourceRow[2] / 255;
-
-			float hue, saturation, value;
-
-			// Xác định giá trị màu lớn nhất trong ba màu
-			float maxColorValue = fmaxf(fmaxf(redValue, greenValue), blueValue);
-
-			// Xác định giá trị màu nhỏ nhất trong ba màu
-			float minColorValue = fminf(fminf(redValue, greenValue), blueValue);
-
-			// Xác định giá trị chênh lệch giữa màu lớn nhất và màu bé nhất trong ba màu = delta
-			float delta = maxColorValue - minColorValue;
-
-			// Tính value = độ sáng của màu sắc sẽ bằng giá trị max của 3 kênh màu
-			value = maxColorValue;
-
-			// Tính hue và saturation
-			if (maxColorValue == 0.0f) {
-				saturation = 0.0f;
-				hue = 0.0f;
+			v = Cmax;
+			if (v == 0) {
+				h = 0;
+				s = 0;
 			}
-			else
-			{
-				if (delta == 0.0f) {
-					saturation = 0.0f;
-					hue = 0.0f;
-				}
-				else {
-					saturation = (delta) / maxColorValue;
-					if (maxColorValue == redValue) {
-						hue = 60 * (((greenValue - blueValue) / (delta)) + 0.0f);
-					}
-					else
-						if (maxColorValue == greenValue) {
-							hue = 60 * (((blueValue - redValue) / (delta)) + 2.0f);
-						}
-						else {
-							hue = 60 * (((redValue - greenValue) / (delta)) + 4.0f);
-						}
-				}
+			else {
+				s = (uchar)((v - Cmin) / v);
+				if (v == red)
+					h = (uchar)(43 * (green - blue) / (v - Cmin));//43=(60/360).255;
+				else if (v == green)
+					h = (uchar)(85 + 43 * (blue - red) / (v - Cmin));//85=(120/360).255;
+				else
+					h = (uchar)(170 + 43 * (red - green) / (v - Cmin));//170=(240/360).255;
 			}
-
-			// Nếu hue < 0
-			if (hue < 0) hue += 360.0f;
-
-			// Gán giá trị [hue, saturation, value] vào ma trận
-			// Gán giá trị hue
-			ptrDestinationRow[0] = cv::saturate_cast<uchar>(hue / 2);
-			ptrDestinationRow[1] = cv::saturate_cast<uchar>(saturation * 255);
-			ptrDestinationRow[2] = cv::saturate_cast<uchar>(value * 255);
+			if (h < 0) {
+				h += 255;
+			}
+			//[[h],[s],[v]] ;
+			// std::cout << "[" <</* int(h) << int(s) <<*/ int(v) << "]";
+			pDstRow[0] = h;
+			pDstRow[1] = s;
+			pDstRow[2] = v;
 		}
 	}
-
-	// Lưu ảnh xuống đĩa
-	cv::imwrite("result_rgb_to_hsv.jpg", destinationImage);
-
-	// Chuyển đổi ảnh thành công: in ra màn hình console tin nhắn
-	std::cout << "Sucess: converted image from RGB to HSV.\n";
-	return 0;
+	return 1;
 }
 
 /*
@@ -343,37 +241,6 @@ int Converter::HSV2RGB(const cv::Mat& sourceImage, cv::Mat& destinationImage)
 
 			// Value = giá trị hay độ sáng của màu sắc, nhận giá trị từ [0.0 - 1.0]
 			float value_value = ptrSourceRow[2] / 255.0f;
-
-			float chroma = value_value * saturation_value;
-
-			float hprime = cv::saturate_cast<float>(1.0 * hue_value / 60);
-
-			float X = cv::saturate_cast<float>(chroma * (1 - fabs(fmod(hprime, 2) - 1)));
-
-			float m = value_value - chroma;
-
-			float redValue = 0.0f;
-			float greenValue = 0.0f;
-			float blueValue = 0.0f;
-
-			// HSV Transform normal
-			0 <= hprime && hprime < 1 ?
-				redValue = chroma, greenValue = X, blueValue = 0 :
-				1 <= hprime && hprime < 2 ?
-				redValue = X, greenValue = chroma, blueValue = 0 :
-				2 <= hprime && hprime < 3 ?
-				redValue = 0, greenValue = chroma, blueValue = X :
-				3 <= hprime && hprime < 4 ?
-				redValue = 0, greenValue = X, blueValue = chroma :
-				4 <= hprime && hprime < 5 ?
-				redValue = X, greenValue = 0, blueValue = chroma :
-				5 <= hprime && hprime < 6 ?
-				redValue = chroma, greenValue = 0, blueValue = X :
-				redValue = 0, greenValue = 0, blueValue = 0;
-
-			redValue += m;
-			blueValue += m;
-			greenValue += m;
 
 			// HSV Transform Alter
 			float k_red = cv::saturate_cast<float>(fmod((5 + 1.0 * hue_value / 60), 6));

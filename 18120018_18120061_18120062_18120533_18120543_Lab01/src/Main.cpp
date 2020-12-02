@@ -262,6 +262,23 @@ int main(int argc, char* argv[]) {
 		cv::destroyWindow("Input image 1");
 		cv::destroyWindow("Input image 2");
 	}
+	else if (__str_cmp__(argv[1], "--testhsv")) {
+		// Đọc ảnh (image) đầu vào)
+		cv::Mat input_image = cv::imread(argv[2], cv::IMREAD_ANYCOLOR);
+
+		cv::Mat temp;
+		// Tính histogram của ảnh
+		cv::Mat output_image;
+		converter.Convert(input_image, temp, 2);
+		converter.Convert(temp, output_image, 3);
+		// Dispay ảnh ra màn hình
+		cv::namedWindow("Input image", cv::WINDOW_AUTOSIZE);
+		cv::imshow("Input image", input_image);
+
+		cv::namedWindow("RGB -> HSV -> RGB", cv::WINDOW_AUTOSIZE);
+		cv::imshow("RGB -> HSV -> RGB", output_image);
+		cv::waitKey(0);
+	}
 	else if ((__str_cmp__(argv[1], "--help")) || (__str_cmp__(argv[1], "--h"))) {
 		std::cout << "Usage:  ColorTranform.exe [command] [input path] [command arguments]\n\n"
 			<< "Options command & command arguments:\n"
