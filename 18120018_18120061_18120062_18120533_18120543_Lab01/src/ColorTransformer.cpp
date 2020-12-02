@@ -97,7 +97,70 @@ int ColorTransformer::ChangeBrighness(const cv::Mat& sourceImage, cv::Mat& desti
 
 int ColorTransformer::ChangeContrast(const cv::Mat& sourceImage, cv::Mat& destinationImage, float c)
 {
-	return 0;
+	if (!sourceImage.data) {
+		// Chuyển đổi ảnh thất bại: in ra màn hình console tin nhắn
+		std::cout << "[EXCEPTION] Error with input image.\n";
+		return 0; // Trả về 1
+	}
+	// Tính số cột, số dòng của sourceImage
+	int width = sourceImage.cols, height = sourceImage.rows;
+	//tạo destinationImage là 1 bản sao của sourceImage
+	destinationImage = sourceImage.clone();
+	//Tính số channels
+	int srcChannels = sourceImage.channels();
+	int desChannels = destinationImage.channels();
+	//Kiểm tra số channels của sourceImage
+	if (srcChannels == 1) {
+		for (int y = 0; y < height; y++)
+		{
+			//con trỏ quản lý dòng
+			const uchar* pSrcRow = sourceImage.ptr<uchar>(y);
+			uchar* pDstRow = destinationImage.ptr<uchar>(y);
+
+			for (int x = 0; x < width; x++, pSrcRow += srcChannels, pDstRow += desChannels)
+			{
+				//lấy giá trị kênh màu nhân với c, sau đó gán qua destinationImage
+				pDstRow[0] = saturate_cast<uchar>(pSrcRow[0] * c);
+			}
+
+
+		}
+
+	}
+	else if (srcChannels == 3) {
+		// Con trỏ quản lý vùng nhớ data ảnh sourceimage
+		uchar* ptrSourceData = sourceImage.data;
+		// Con trỏ quản lý vùng nhớ data ảnh destinationImage
+		uchar* ptrdestinationData = destinationImage.data;
+		//Tính widthstep
+		int sourceWidthStep = sourceImage.step[0];
+		int desWidthStep = destinationImage.step[0];
+
+
+		for (int y = 0; y < height; y++, ptrSourceData += sourceWidthStep, ptrdestinationData += desWidthStep) {
+			uchar* ptrSourceRow = ptrSourceData;
+			uchar* ptrDesRow = ptrdestinationData;
+
+			for (int x = 0; x < width; x++, ptrSourceRow += srcChannels, ptrDesRow += desChannels) {
+
+				// lấy giá trị kênh màu nhân với c, sau đó gán qua destinationImage
+
+				ptrDesRow[0] = saturate_cast<uchar>(ptrSourceRow[0] * c);
+
+				ptrDesRow[1] = saturate_cast<uchar>(ptrSourceRow[1] * c);
+
+				ptrDesRow[2] = saturate_cast<uchar>(ptrSourceRow[2] * c);
+
+
+			}
+		}
+
+	}
+	//Lưu ảnh destinationImage
+	cv::imwrite("result_contrast.jpg", destinationImage);
+	std::cout << "Sucess: change contrast of image.\n";
+	return 1;
+
 }
 
 int ColorTransformer::CalcHistogram(const cv::Mat& sourceImage, cv::Mat& histMatrix)
