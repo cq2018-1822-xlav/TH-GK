@@ -27,6 +27,10 @@ int main(int argc, char* argv[]) {
 		// code 
 		// Đọc ảnh (image) đầu vào)
 		cv::Mat inputImage = cv::imread(argv[2], cv::IMREAD_ANYCOLOR);
+		if (!inputImage.data || inputImage.channels() != 3) {
+			std::cout << "[EXCEPTION] Error occurs.\n";
+			return 0;
+		}
 
 		// Khởi tạo ảnh đầu ra
 		cv::Mat outputImage = cv::Mat(inputImage.rows, inputImage.cols, CV_8UC1);
@@ -50,6 +54,10 @@ int main(int argc, char* argv[]) {
 		// code 
 		// Đọc ảnh (image) đầu vào)
 		cv::Mat inputImage = cv::imread(argv[2], cv::IMREAD_ANYCOLOR);
+		if (!inputImage.data || inputImage.channels() != 1) {
+			std::cout << "[EXCEPTION] Error occurs.\n";
+			return 0;
+		}
 
 		// Khởi tạo ảnh đầu ra
 		cv::Mat outputImage = cv::Mat(inputImage.rows, inputImage.cols, CV_8UC3);
@@ -74,6 +82,10 @@ int main(int argc, char* argv[]) {
 		// code 
 		// Đọc ảnh (image) đầu vào)
 		cv::Mat inputImage = cv::imread(argv[2], cv::IMREAD_ANYCOLOR);
+		if (!inputImage.data || inputImage.channels() != 3) {
+			std::cout << "[EXCEPTION] Error occurs.\n";
+			return 0;
+		}
 
 		// Khởi tạo ảnh đầu ra
 		cv::Mat outputImage = cv::Mat(inputImage.rows, inputImage.cols, CV_8UC3);
@@ -97,6 +109,10 @@ int main(int argc, char* argv[]) {
 		// code 
 		// Đọc ảnh (image) đầu vào)
 		cv::Mat inputImage = cv::imread(argv[2], cv::IMREAD_ANYCOLOR);
+		if (!inputImage.data || inputImage.channels() != 3) {
+			std::cout << "[EXCEPTION] Error occurs.\n";
+			return 0;
+		}
 
 		// Khởi tạo ảnh đầu ra
 		cv::Mat outputImage = cv::Mat(inputImage.rows, inputImage.cols, CV_8UC3);
@@ -120,6 +136,9 @@ int main(int argc, char* argv[]) {
 		// code 
 		// Đọc ảnh (image) đầu vào)
 		cv::Mat inputImage = cv::imread(argv[2], cv::IMREAD_ANYCOLOR);
+		if (!inputImage.data || (inputImage.channels() != 3 && inputImage.channels() != 1)) {
+			std::cout << "[EXCEPTION] Error occurs.\n";
+		}
 
 		// Khởi tạo ảnh đầu ra
 		cv::Mat outputImage = inputImage.clone();
@@ -147,6 +166,10 @@ int main(int argc, char* argv[]) {
 		// code
 		// Đọc ảnh (image) đầu vào)
 		cv::Mat inputImage = cv::imread(argv[2], cv::IMREAD_ANYCOLOR);
+		if (!inputImage.data || (inputImage.channels() != 3 && inputImage.channels() != 1)) {
+			std::cout << "[EXCEPTION] Error occurs.\n";
+			return 0;
+		}
 
 		// Khởi tạo ảnh đầu ra
 		cv::Mat outputImage = inputImage.clone();
@@ -176,6 +199,10 @@ int main(int argc, char* argv[]) {
 		// code
 		// Đọc ảnh (image) đầu vào)
 		cv::Mat inputImage = cv::imread(argv[2], cv::IMREAD_ANYCOLOR);
+		if (!inputImage.data || (inputImage.channels() != 3 && inputImage.channels() != 1)) {
+			std::cout << "[EXCEPTION] Error occurs.\n";
+			return 0;
+		}
 
 		// Tính histogram của ảnh
 		cv::Mat histogram_inputImage;
@@ -192,6 +219,10 @@ int main(int argc, char* argv[]) {
 		// code
 		// Đọc ảnh (image) đầu vào)
 		cv::Mat inputImage = cv::imread(argv[2], cv::IMREAD_ANYCOLOR);
+		if (!inputImage.data || (inputImage.channels() != 3 && inputImage.channels() != 1)) {
+			std::cout << "[EXCEPTION] Error occurs.\n";
+			return 0;
+		}
 
 		// Khởi tạo ảnh đầu ra
 		cv::Mat outputImage;
@@ -213,6 +244,10 @@ int main(int argc, char* argv[]) {
 		// code
 		// Đọc ảnh (image) đầu vào)
 		cv::Mat inputImage = cv::imread(argv[2], cv::IMREAD_ANYCOLOR);
+		if (!inputImage.data || (inputImage.channels() != 3 && inputImage.channels() != 1)) {
+			std::cout << "[EXCEPTION] Error occurs.\n";
+			return 0;
+		}
 
 		// Tính histogram của ảnh
 		cv::Mat histogram_matrix_inputImage;
@@ -238,6 +273,15 @@ int main(int argc, char* argv[]) {
 		// Đọc ảnh (image) đầu vào)
 		cv::Mat inputImage1 = cv::imread(argv[2], cv::IMREAD_ANYCOLOR);
 		cv::Mat inputImage2 = cv::imread(argv[3], cv::IMREAD_ANYCOLOR);
+		if (!inputImage1.data || (inputImage1.channels() != 3 && inputImage1.channels() != 1)) {
+			std::cout << "[EXCEPTION] Error occurs.\n";
+			return 0;
+		}
+
+		if (!inputImage2.data || (inputImage2.channels() != 3 && inputImage2.channels() != 1)) {
+			std::cout << "[EXCEPTION] Error occurs.\n";
+			return 0;
+		}
 
 		// So sánh hai ảnh
 		// TODO: add some code here.
@@ -254,19 +298,24 @@ int main(int argc, char* argv[]) {
 	}
 	else if (__str_cmp__(argv[1], "--testhsv")) {
 		// Đọc ảnh (image) đầu vào)
-		cv::Mat input_image = cv::imread(argv[2], cv::IMREAD_ANYCOLOR);
+		cv::Mat inputImage = cv::imread(argv[2], cv::IMREAD_ANYCOLOR);
+
+		if (!inputImage.data || (inputImage.channels() != 3 && inputImage.channels() != 1)) {
+			std::cout << "[EXCEPTION] Error occurs.\n";
+			return 0;
+		}
 
 		cv::Mat temp;
 		// Tính histogram của ảnh
-		cv::Mat output_image;
-		converter.Convert(input_image, temp, 2);
-		converter.Convert(temp, output_image, 3);
+		cv::Mat outputImage;
+		converter.Convert(inputImage, temp, 2);
+		converter.Convert(temp, outputImage, 3);
 		// Dispay ảnh ra màn hình
 		cv::namedWindow("Input image", cv::WINDOW_AUTOSIZE);
-		cv::imshow("Input image", input_image);
+		cv::imshow("Input image", inputImage);
 
 		cv::namedWindow("RGB -> HSV -> RGB", cv::WINDOW_AUTOSIZE);
-		cv::imshow("RGB -> HSV -> RGB", output_image);
+		cv::imshow("RGB -> HSV -> RGB", outputImage);
 		cv::waitKey(0);
 	}
 	else if ((__str_cmp__(argv[1], "--help")) || (__str_cmp__(argv[1], "--h"))) {
