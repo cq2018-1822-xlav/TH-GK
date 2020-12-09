@@ -13,20 +13,16 @@ int main(int argc, char* argv[]) {
 			// Đọc ảnh (image) đầu vào)
 			// Đọc ảnh (image) đầu vào)
 			if (argv[3] == nullptr) {
-				std::cout << "[Exception] Error occurs.\n";
+				std::cout << "[Exception].\n";
 				return 0;
 			}
 
 			cv::Mat inputImage = cv::imread(argv[3], cv::IMREAD_ANYCOLOR);
-			if (!inputImage.data) {
-				std::cout << "[EXCEPTION] Error occurs.\n";
-				return 0;
-			}
 
 			// Khởi tạo ảnh đầu ra
 			cv::Mat outputImage;
 			if (argv[4] == nullptr) {
-				std::cout << "[Exception] Error occurs.\n";
+				std::cout << "[Exception].\n";
 				return 0;
 			}
 			else {
@@ -46,20 +42,16 @@ int main(int argc, char* argv[]) {
 			// Đọc ảnh (image) đầu vào)
 			// Đọc ảnh (image) đầu vào)
 			if (argv[3] == nullptr) {
-				std::cout << "[Exception] Error occurs.\n";
+				std::cout << "[Exception].\n";
 				return 0;
 			}
 
 			cv::Mat inputImage = cv::imread(argv[3], cv::IMREAD_ANYCOLOR);
-			if (!inputImage.data) {
-				std::cout << "[EXCEPTION] Error occurs.\n";
-				return 0;
-			}
 
 			// Khởi tạo ảnh đầu ra
 			cv::Mat outputImage;
 			if (argv[4] == nullptr) {
-				std::cout << "[Exception] Error occurs.\n";
+				std::cout << "[Exception].\n";
 				return 0;
 			}
 			else {
@@ -74,7 +66,7 @@ int main(int argc, char* argv[]) {
 			cv::waitKey(0);
 		}
 		else {
-			std::cout << "[EXCEPTION] Error occurs.\n";
+			std::cout << "[EXCEPTION] \n";
 		}
 	}
 	else if (strcmp(argv[1], "--resize") == 0) {
@@ -83,20 +75,16 @@ int main(int argc, char* argv[]) {
 			interpolate = new BilinearInterpolate();
 			// Đọc ảnh (image) đầu vào)
 			if (argv[3] == nullptr) {
-				std::cout << "[Exception] Error occurs.\n";
+				std::cout << "[Exception].\n";
 				return 0;
 			}
 
 			cv::Mat inputImage = cv::imread(argv[3], cv::IMREAD_ANYCOLOR);
-			if (!inputImage.data) {
-				std::cout << "[EXCEPTION] Error occurs.\n";
-				return 0;
-			}
 
 			// Khởi tạo ảnh đầu ra
 			cv::Mat outputImage;
 			if (argv[4] == nullptr || argv[5] == nullptr || (argv[4] == nullptr && argv[5] == nullptr)) {
-				std::cout << "[Exception] Error occurs.\n";
+				std::cout << "[Exception].\n";
 				return 0;
 			}
 			else {
@@ -116,20 +104,16 @@ int main(int argc, char* argv[]) {
 			// Đọc ảnh (image) đầu vào)
 			// Đọc ảnh (image) đầu vào)
 			if (argv[3] == nullptr) {
-				std::cout << "[Exception] Error occurs.\n";
+				std::cout << "[Exception].\n";
 				return 0;
 			}
 
 			cv::Mat inputImage = cv::imread(argv[3], cv::IMREAD_ANYCOLOR);
-			if (!inputImage.data) {
-				std::cout << "[EXCEPTION] Error occurs.\n";
-				return 0;
-			}
 
 			// Khởi tạo ảnh đầu ra
 			cv::Mat outputImage;
 			if (argv[4] == nullptr || argv[5] == nullptr || (argv[4] == nullptr && argv[5] == nullptr)) {
-				std::cout << "[Exception] Error occurs.\n";
+				std::cout << "[Exception].\n";
 				return 0;
 			}
 			else {
@@ -145,7 +129,7 @@ int main(int argc, char* argv[]) {
 
 		}
 		else {
-			std::cout << "[EXCEPTION] Error occurs.\n";
+			std::cout << "[EXCEPTION] \n";
 		}
 	}
 	else if (strcmp(argv[1], "--rotate") == 0) {
@@ -155,20 +139,16 @@ int main(int argc, char* argv[]) {
 
 			// Đọc ảnh (image) đầu vào)
 			if (argv[3] == nullptr) {
-				std::cout << "[Exception] Error occurs.\n";
+				std::cout << "[Exception].\n";
 				return 0;
 			}
 
 			cv::Mat inputImage = cv::imread(argv[3], cv::IMREAD_ANYCOLOR);
-			if (!inputImage.data) {
-				std::cout << "[EXCEPTION] Error occurs.\n";
-				return 0;
-			}
 
 			// Khởi tạo ảnh đầu ra
 			cv::Mat outputImage;
 			if (argv[4] == nullptr) {
-				std::cout << "[Exception] Error occurs.\n";
+				std::cout << "[Exception].\n";
 				return 0;
 			}
 			else {
@@ -188,20 +168,16 @@ int main(int argc, char* argv[]) {
 			interpolate = new NearestNeighborInterpolate();
 			// Đọc ảnh (image) đầu vào)
 			if (argv[3] == nullptr) {
-				std::cout << "[Exception] Error occurs.\n";
+				std::cout << "[Exception].\n";
 				return 0;
 			}
 
 			cv::Mat inputImage = cv::imread(argv[3], cv::IMREAD_ANYCOLOR);
-			if (!inputImage.data) {
-				std::cout << "[EXCEPTION] Error occurs.\n";
-				return 0;
-			}
 
 			// Khởi tạo ảnh đầu ra
 			cv::Mat outputImage;
 			if (argv[4] == nullptr) {
-				std::cout << "[Exception] Error occurs.\n";
+				std::cout << "[Exception].\n";
 				return 0;
 			}
 			else {
@@ -216,7 +192,7 @@ int main(int argc, char* argv[]) {
 			cv::waitKey(0);
 		}
 		else {
-			std::cout << "[EXCEPTION] Error occurs.\n";
+			std::cout << "[EXCEPTION] \n";
 		}
 	}
 	else if (strcmp(argv[1], "--rotateN") == 0) {
@@ -225,20 +201,16 @@ int main(int argc, char* argv[]) {
 			interpolate = new BilinearInterpolate();
 			// Đọc ảnh (image) đầu vào)
 			if (argv[3] == nullptr) {
-				std::cout << "[Exception] Error occurs.\n";
+				std::cout << "[Exception].\n";
 				return 0;
 			}
 
 			cv::Mat inputImage = cv::imread(argv[3], cv::IMREAD_ANYCOLOR);
-			if (!inputImage.data) {
-				std::cout << "[EXCEPTION] Error occurs.\n";
-				return 0;
-			}
 
 			// Khởi tạo ảnh đầu ra
 			cv::Mat outputImage;
 			if (argv[4] == nullptr) {
-				std::cout << "[Exception] Error occurs.\n";
+				std::cout << "[Exception].\n";
 				return 0;
 			}
 			else {
@@ -258,19 +230,16 @@ int main(int argc, char* argv[]) {
 			interpolate = new NearestNeighborInterpolate();
 			// Đọc ảnh (image) đầu vào)
 			if (argv[3] == nullptr) {
-				std::cout << "[Exception] Error occurs.\n";
+				std::cout << "[Exception].\n";
 				return 0;
 			}
 
 			cv::Mat inputImage = cv::imread(argv[3], cv::IMREAD_ANYCOLOR);
-			if (!inputImage.data) {
-				std::cout << "[EXCEPTION] Error occurs.\n";
-				return 0;
-			}
+
 			// Khởi tạo ảnh đầu ra
 			cv::Mat outputImage;
 			if (argv[4] == nullptr) {
-				std::cout << "[Exception] Error occurs.\n";
+				std::cout << "[Exception].\n";
 				return 0;
 			}
 			else {
@@ -286,7 +255,7 @@ int main(int argc, char* argv[]) {
 
 		}
 		else {
-			std::cout << "[EXCEPTION] Error occurs.\n";
+			std::cout << "[EXCEPTION] \n";
 		}
 	}
 	else if (strcmp(argv[1], "--flip") == 0) {
@@ -300,10 +269,9 @@ int main(int argc, char* argv[]) {
 			}
 
 			cv::Mat inputImage = cv::imread(argv[3], cv::IMREAD_ANYCOLOR);
-			if (!inputImage.data) {
-				std::cout << "[EXCEPTION] Error occurs.\n";
-				return 0;
-			}
+
+
+
 			// Khởi tạo ảnh đầu ra
 			cv::Mat outputImage = inputImage.clone();
 			if (strcmp(argv[4], "Ox") == 0) {
@@ -326,15 +294,12 @@ int main(int argc, char* argv[]) {
 			interpolate = new NearestNeighborInterpolate();
 			// Đọc ảnh (image) đầu vào)
 			if (argv[3] == nullptr) {
-				std::cout << "[Exception] Error occurs.\n";
+				std::cout << "[Exception].\n";
 				return 0;
 			}
 
 			cv::Mat inputImage = cv::imread(argv[3], cv::IMREAD_ANYCOLOR);
-			if (!inputImage.data) {
-				std::cout << "[EXCEPTION] Error occurs.\n";
-				return 0;
-			}
+
 			// Khởi tạo ảnh đầu ra
 			cv::Mat outputImage = inputImage.clone();
 			if (strcmp(argv[4], "Ox") == 0) {
@@ -353,7 +318,7 @@ int main(int argc, char* argv[]) {
 			cv::waitKey(0);
 		}
 		else {
-			std::cout << "[EXCEPTION] Error occurs.\n";
+			std::cout << "[EXCEPTION] \n";
 		}
 	}
 	else if (strcmp(argv[1], "--help") || strcmp(argv[1], "--h")) {
@@ -374,7 +339,7 @@ int main(int argc, char* argv[]) {
 			;
 	}
 	else {
-		std::cout << "[EXCEPTION] Error occurs.\n";
+		std::cout << "[EXCEPTION] \n";
 	}
 	return 0;
 }

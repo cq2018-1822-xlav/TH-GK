@@ -24,10 +24,10 @@ uchar BilinearInterpolate::Interpolate(float tx, float ty, uchar * pSrc, int src
 	// f'(x', y') = (1 - a)(1 - b)f(l,k) + a(1 - b)f(l+1,k) + b(1 - a)f(l, k + 1) + abf(l + 1, k + 1)
 
 	// l = round(x)
-	int l = (int)(round(tx));
+	int l = (int)(floor(tx));
 
 	// k = round(y)
-	int k = (int)(round(ty));
+	int k = (int)(floor(ty));
 
 	// a = x - l
 	float a = tx - l;
@@ -69,8 +69,8 @@ Trả về
 	- Giá trị màu được nội suy
 */
 uchar NearestNeighborInterpolate::Interpolate(float tx, float ty, uchar * pSrc, int srcWidthStep, int nChannels) {
-	int l = (int)round(tx);
-	int k = (int)round(ty);
+	int l = (int)floor(tx);
+	int k = (int)floor(ty);
 	return cv::saturate_cast<uchar>((pSrc + (long long)srcWidthStep * l + (long long)nChannels * k)[0]);
 }
 
@@ -114,9 +114,9 @@ void AffineTransform::Scale(float sx, float sy) { // xây dựng matrix transfor
 
 void AffineTransform::TransformPoint(float& x, float& y) { // transform 1 điểm (x,y) theo matrix transform đã có
 	float oldPointMatrix[] = { x, y, 1 };
-	cv::Mat newPoint = this->_matrixTransform * cv::Mat(3, 3, CV_32FC1, oldPointMatrix);
+	cv::Mat newPoint = this->_matrixTransform * cv::Mat(1, 3, CV_32FC1, oldPointMatrix);
 	x = newPoint.ptr<float>(0)[0];
-	y = newPoint.ptr<float>(0)[1];
+	y = newPoint.ptr<float>(1)[0];
 }
 
 AffineTransform::AffineTransform() {
